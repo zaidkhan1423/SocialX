@@ -23,9 +23,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Create an\nAccount"
+            android:text="@string/create_an_naccount"
             android:textColor="@color/red"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.118"
@@ -38,9 +38,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
             android:layout_marginTop="16dp"
-            android:text="Name"
+            android:text="@string/name"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -52,9 +52,9 @@
             android:layout_marginHorizontal="36dp"
             android:backgroundTint="@color/gray_500"
             android:drawableEnd="@drawable/ic_person"
-            android:hint="John doe"
+            android:hint="@string/john_doe"
             android:inputType="textPersonName"
-            android:paddingHorizontal="10dp"
+            android:paddingHorizontal="5dp"
             android:textColor="@color/black"
             android:textColorHint="@color/gray_500"
             android:textCursorDrawable="@color/black"
@@ -68,9 +68,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
             android:layout_marginTop="12dp"
-            android:text="Email"
+            android:text="@string/email"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etName" />
@@ -82,9 +82,9 @@
             android:layout_marginHorizontal="36dp"
             android:backgroundTint="@color/gray_500"
             android:drawableEnd="@drawable/ic_mail"
-            android:hint="johndeo@gmail.com"
+            android:hint="@string/johndoe_gmail_com"
             android:inputType="textEmailAddress"
-            android:paddingHorizontal="10dp"
+            android:paddingHorizontal="5dp"
             android:textColor="@color/black"
             android:textColorHint="@color/gray_500"
             android:textCursorDrawable="@color/black"
@@ -98,9 +98,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
             android:layout_marginTop="12dp"
-            android:text="Contact no"
+            android:text="@string/contact_no"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etEmail" />
@@ -120,7 +120,7 @@
                 android:id="@+id/ccp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingVertical="14dp"
+                android:paddingVertical="12dp"
                 app:ccp_countryPreference="IN,US,NZ"
                 app:ccp_defaultCode="91"
                 app:ccp_defaultNameCode="IN"
@@ -133,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableEnd="@drawable/ic_call"
-                android:hint="9876543210"
+                android:hint="@string/_9876543210"
                 android:importantForAutofill="no"
                 android:inputType="number" />
 
@@ -145,9 +145,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
             android:layout_marginTop="12dp"
-            android:text="Password"
+            android:text="@string/password"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/llPhone" />
@@ -161,7 +161,7 @@
             android:drawableEnd="@drawable/ic_lock"
             android:hint="*********"
             android:inputType="textPassword"
-            android:paddingHorizontal="10dp"
+            android:paddingHorizontal="5dp"
             android:textColor="@color/black"
             android:textColorHint="@color/gray_500"
             android:textCursorDrawable="@color/black"
@@ -173,11 +173,11 @@
             android:id="@+id/linearLayout3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
             android:gravity="center"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.204"
+            app:layout_constraintHorizontal_bias="0.29"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etPassword">
 
@@ -187,7 +187,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:paddingLeft="20dp"
-                android:text="I agree with"
+                android:text="@string/i_agree_with"
                 android:textSize="16sp" />
 
             <TextView
@@ -203,17 +203,16 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-            app:layout_constraintVertical_bias="0.359">
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Already have an Account ?"
+                android:text="@string/already_have_an_account"
                 android:textColor="#7E7E7E"
                 android:textSize="16sp"
                 tools:layout_editor_absoluteX="56dp"
@@ -223,7 +222,7 @@
                 android:id="@+id/btnSignIn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" Sign In!"
+                android:text="@string/sign_in"
                 android:textColor="@color/red"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -235,7 +234,7 @@
 
     <Button
         android:id="@+id/btnRegister"
-        android:text="Register"
+        android:text="@string/register"
         android:textSize="17sp"
         android:layout_width="match_parent"
         android:layout_height="50dp"

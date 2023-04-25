@@ -14,4 +14,12 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="logoutButton" parent="">
+        <item name="colorPrimary">@color/blue_400</item>
+    </style>
+
+    <style name="newsActivity" parent="Theme.SocialX">
+        <item name="colorPrimaryVariant">@color/blue_400</item>
+    </style>
+
 </resources>

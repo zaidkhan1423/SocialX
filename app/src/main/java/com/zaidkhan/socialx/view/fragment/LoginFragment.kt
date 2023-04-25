@@ -10,19 +10,24 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.zaidkhan.socialx.R
+import com.zaidkhan.socialx.SocialXApplication
+import com.zaidkhan.socialx.utils.Resource
 import com.zaidkhan.socialx.databinding.FragmentLoginBinding
-import com.zaidkhan.socialx.view.activity.MainActivity
 import com.zaidkhan.socialx.view.activity.NewsActivity
-
+import com.zaidkhan.socialx.viewModel.AuthViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+import javax.inject.Named
 
 class LoginFragment : Fragment() {
 
@@ -33,8 +38,17 @@ class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
     private var callback: MainActivityCallback? = null
-    private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var googleSignInClient: GoogleSignInClient
+
+    @Inject
+    lateinit var googleSignInClient: GoogleSignInClient
+
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
+
+    @Inject
+    @Named("Auth")
+    lateinit var authfactory: ViewModelProvider.Factory
+    private val authViewModel: AuthViewModel by viewModels { authfactory }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -43,14 +57,13 @@ class LoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        firebaseAuth = FirebaseAuth.getInstance()
-
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        googleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
+        (activity?.application as SocialXApplication).appComponent.inject(this)
+        if( authViewModel.currentUser != null){
+            val intent = Intent(activity?.application, NewsActivity::class.java)
+            startActivity(intent)
+            activity?.finish()
+            onDestroy()
+        }
     }
 
     override fun onCreateView(
@@ -64,7 +77,6 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.btnRegisterNow.setOnClickListener {
             val action = LoginFragmentDirections.actionLoginFragmentToSignupFragment()
             Navigation.findNavController(it!!).navigate(action)
@@ -75,15 +87,42 @@ class LoginFragment : Fragment() {
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        Toast.makeText(requireContext(), "Open", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            it.exception.toString(),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                authViewModel?.login(email, password)
+                lifecycleScope.launch {
+                    authViewModel.loginFlow.collect {
+                        when (it) {
+                            is Resource.Failure -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Check Your Email And Password",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            }
+                            is Resource.Success -> {
+                                Toast.makeText(requireContext(), "Login", Toast.LENGTH_SHORT).show()
+                                val intent = Intent(activity?.application, NewsActivity::class.java)
+                                startActivity(intent)
+                                activity?.finish()
+                                onDestroy()
+                            }
+                            Resource.Loading -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Loading State",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            }
+                            else -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Unexpected Error",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            }
+                        }
                     }
                 }
             } else {
@@ -96,24 +135,26 @@ class LoginFragment : Fragment() {
         }
     }
 
-    val launcher =
+    private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                Toast.makeText(requireContext(), "launcher k under0", Toast.LENGTH_SHORT).show()
                 val task =
                     GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 handleResults(task)
             }
-            else{
-                Toast.makeText(requireContext(), "launcher k under", Toast.LENGTH_SHORT).show()
-            }
         }
+
+    private fun signInGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
+        launcher.launch(signInIntent)
+    }
 
     private fun handleResults(task: Task<GoogleSignInAccount>) {
         if (task.isSuccessful) {
             val account: GoogleSignInAccount? = task.result
             if (account != null) {
-                Toast.makeText(requireContext(), task.exception.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), task.exception.toString(), Toast.LENGTH_SHORT)
+                    .show()
                 updateUI(account)
             }
         } else {
@@ -126,17 +167,12 @@ class LoginFragment : Fragment() {
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
                 Toast.makeText(requireContext(), it.exception.toString(), Toast.LENGTH_SHORT).show()
-                Intent(activity?.application, NewsActivity::class.java)
+                val intent = Intent(activity?.application, NewsActivity::class.java)
+                startActivity(intent)
             } else {
                 Toast.makeText(requireContext(), it.exception.toString(), Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    private fun signInGoogle() {
-        Toast.makeText(requireContext(), "Sign in k under", Toast.LENGTH_SHORT).show()
-        val signInIntent = googleSignInClient.signInIntent
-        launcher.launch(signInIntent)
     }
 
     override fun onDetach() {

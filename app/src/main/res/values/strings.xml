@@ -2,4 +2,29 @@
     <string name="app_name">SocialX</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">LOGIN</string>
+    <string name="signup">SIGNUP</string>
+    <string name="search_in_feed">Search In Feed</string>
+    <string name="logout">Logout</string>
+    <string name="signin_into_your_naccount">SignIn Into Your\nAccount</string>
+    <string name="email">Email</string>
+    <string name="johndoe_gmail_com">johndoe@gmail.com</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login_with">Login With</string>
+    <string name="don_t_have_an_account">Don\'t have an Account?</string>
+    <string name="register_now"> Register Now</string>
+    <string name="create_an_naccount">Create an\nAccount</string>
+    <string name="name">Name</string>
+    <string name="john_doe">John doe</string>
+    <string name="contact_no">Contact no</string>
+    <string name="_9876543210">9876543210</string>
+    <string name="i_agree_with">I agree with</string>
+    <string name="already_have_an_account">Already have an Account ?</string>
+    <string name="sign_in"> Sign In!</string>
+    <string name="register">Register</string>
+    <string name="_2_hours_ago">2 Hours Ago</string>
+    <string name="bbc_news">BBC News</string>
+    <string name="apple_admits_slowing_down_older_iphones">Apple admits slowing down older iPhones</string>
+    <string name="customers_have_long_suspected_iphones_slow_down_over_time_now_apple_has_confirmed_some_models_do">Customers have long suspected iPhones slow down over time. Now, Apple has confirmed some models do.</string>
 </resources>

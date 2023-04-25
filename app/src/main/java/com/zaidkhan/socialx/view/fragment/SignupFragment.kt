@@ -7,17 +7,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.zaidkhan.socialx.SocialXApplication
+import com.zaidkhan.socialx.utils.Resource
 import com.zaidkhan.socialx.databinding.FragmentSignupBinding
+import com.zaidkhan.socialx.viewModel.AuthViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+import javax.inject.Named
 
 class SignupFragment : Fragment() {
 
     private lateinit var binding: FragmentSignupBinding
     private var callback: LoginFragment.MainActivityCallback? = null
-    private lateinit var auth: FirebaseAuth
-    private lateinit var db: FirebaseFirestore
+    @Inject
+    @Named("Auth")
+    lateinit var authfactory: ViewModelProvider.Factory
+    private val authViewModel: AuthViewModel by viewModels { authfactory }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -26,14 +35,11 @@ class SignupFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Initialize it in your sign-up activity's onCreate method
-        auth = FirebaseAuth.getInstance()
-        db = FirebaseFirestore.getInstance()
+        (activity?.application as SocialXApplication).appComponent.inject(this)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentSignupBinding.inflate(layoutInflater, container, false)
@@ -53,58 +59,33 @@ class SignupFragment : Fragment() {
                 val name = binding.etName.text.toString().trim()
                 val password = binding.etPassword.text.toString().trim()
                 val phoneNo = binding.etPhone.text.toString().trim()
-
                 if (email.isNotEmpty() && name.isNotEmpty() && password.isNotEmpty() && phoneNo.isNotEmpty()) {
-                    auth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                val user = auth.currentUser
-                                val userData = hashMapOf(
-                                    "name" to name,
-                                    "email" to email,
-                                    "phoneNumber" to phoneNo
-                                )
-                                db.collection("users").document(user!!.uid)
-                                    .set(userData)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(
-                                            requireContext(),
-                                            "User Register Successfully",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                        val action =
-                                            SignupFragmentDirections.actionSignupFragmentToLoginFragment()
-                                        Navigation.findNavController(view).navigate(action)
-                                        callback?.signupToLogin()
-                                    }
-                                    .addOnFailureListener {
-                                        // Registration failed
-                                        Toast.makeText(
-                                            requireContext(),
-                                            it.suppressedExceptions.toString(),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                            } else {
-                                // Registration failed
-                                Toast.makeText(
-                                    requireContext(),
-                                    task.exception.toString(),
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                    authViewModel?.signup(name, email, password, phoneNo)
+                    lifecycleScope.launch {
+                        authViewModel.signupFlow.collect {
+                            when (it) {
+                                is Resource.Success -> {
+                                    Toast.makeText(requireContext(), "User Register Successfully", Toast.LENGTH_LONG).show()
+                                    val action = SignupFragmentDirections.actionSignupFragmentToLoginFragment()
+                                    Navigation.findNavController(view).navigate(action)
+                                    authViewModel.logout()
+                                    callback?.signupToLogin()
+                                }
+                                is Resource.Failure -> {
+                                    Toast.makeText(requireContext(), "Registration is Fail", Toast.LENGTH_LONG).show()
+                                }
+                                is Resource.Loading -> {
+                                    Toast.makeText(requireContext(), "Loading", Toast.LENGTH_LONG).show()
+                                }
+                                else -> {}
                             }
                         }
+                    }
                 } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Empty Fields Are not allowed !!",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(requireContext(), "Empty Fields Are not allowed !!", Toast.LENGTH_SHORT).show()
                 }
-            }
-            else{
-                Toast.makeText(requireContext(), "Check The Term & Conditions", Toast.LENGTH_SHORT)
-                    .show()
+            } else {
+                Toast.makeText(requireContext(), "Check The Term & Conditions", Toast.LENGTH_SHORT).show()
             }
         }
     }

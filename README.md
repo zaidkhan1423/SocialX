@@ -22,7 +22,6 @@ implementation "androidx.navigation:navigation-ui-ktx:3.5.3"<br><br>
 ViewModel and LiveData: Used to implement the MVVM architecture pattern and observe changes in the data. <br>
 implementation "androidx.lifecycle:lifecycle-livedata:2.6.0"<br>
 implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0"<br><br>
-
 Dagger 2: Used for dependency injection to facilitate separation of concerns and improve maintainability. <br>
 implementation 'com.google.dagger:dagger:2.44'<br>
 kapt 'com.google.dagger:dagger-compiler:2.44'<br><br>

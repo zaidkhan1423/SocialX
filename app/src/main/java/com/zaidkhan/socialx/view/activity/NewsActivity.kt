@@ -41,7 +41,9 @@ class NewsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityNewsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         (application as SocialXApplication).appComponent.inject(this)
+
         setSupportActionBar(binding.toolbar)
 
         adapter = NewsAdapter(this)
@@ -84,8 +86,7 @@ class NewsActivity : AppCompatActivity() {
                         is NewsResource.Success -> {
                             response.data.let { newsResponse ->
                                 adapter.submitList(newsResponse?.articles?.toList())
-                                Toast.makeText(this, "Showing Results", Toast.LENGTH_SHORT)
-                                    .show()
+                                Toast.makeText(this, "Showing Results", Toast.LENGTH_SHORT).show()
                             }
                         }
                         is NewsResource.Error -> {

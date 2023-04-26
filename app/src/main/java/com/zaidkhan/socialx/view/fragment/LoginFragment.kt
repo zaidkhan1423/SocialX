@@ -38,13 +38,10 @@ class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
     private var callback: MainActivityCallback? = null
-
     @Inject
     lateinit var googleSignInClient: GoogleSignInClient
-
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
-
     @Inject
     @Named("Auth")
     lateinit var authfactory: ViewModelProvider.Factory
@@ -57,7 +54,9 @@ class LoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         (activity?.application as SocialXApplication).appComponent.inject(this)
+
         if( authViewModel.currentUser != null){
             val intent = Intent(activity?.application, NewsActivity::class.java)
             startActivity(intent)
@@ -87,44 +86,7 @@ class LoginFragment : Fragment() {
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                authViewModel?.login(email, password)
-                lifecycleScope.launch {
-                    authViewModel.loginFlow.collect {
-                        when (it) {
-                            is Resource.Failure -> {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Check Your Email And Password",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
-                            }
-                            is Resource.Success -> {
-                                Toast.makeText(requireContext(), "Login", Toast.LENGTH_SHORT).show()
-                                val intent = Intent(activity?.application, NewsActivity::class.java)
-                                startActivity(intent)
-                                activity?.finish()
-                                onDestroy()
-                            }
-                            Resource.Loading -> {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Loading State",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
-                            }
-                            else -> {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Unexpected Error",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
-                            }
-                        }
-                    }
-                }
+                    logInUser(email,password)
             } else {
                 Toast.makeText(requireContext(), "Incorrect Credentials", Toast.LENGTH_SHORT).show()
             }
@@ -132,6 +94,33 @@ class LoginFragment : Fragment() {
 
         binding.btnGoogleLogin.setOnClickListener {
             signInGoogle()
+        }
+
+    }
+
+    private fun logInUser(email: String, password: String) {
+        authViewModel?.login(email, password)
+        lifecycleScope.launch {
+            authViewModel.loginFlow.collect {
+                when (it) {
+                    is Resource.Failure -> {
+                        Toast.makeText(requireContext(), "Check Your Email And Password", Toast.LENGTH_SHORT).show()
+                    }
+                    is Resource.Success -> {
+                        Toast.makeText(requireContext(), "Login", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(activity?.application, NewsActivity::class.java)
+                        startActivity(intent)
+                        activity?.finish()
+                        onDestroy()
+                    }
+                    Resource.Loading -> {
+                        Toast.makeText(requireContext(), "Loading State", Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        Toast.makeText(requireContext(), "Unexpected Error", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
     }
 
@@ -169,6 +158,8 @@ class LoginFragment : Fragment() {
                 Toast.makeText(requireContext(), it.exception.toString(), Toast.LENGTH_SHORT).show()
                 val intent = Intent(activity?.application, NewsActivity::class.java)
                 startActivity(intent)
+                activity?.finish()
+                onDestroy()
             } else {
                 Toast.makeText(requireContext(), it.exception.toString(), Toast.LENGTH_SHORT).show()
             }

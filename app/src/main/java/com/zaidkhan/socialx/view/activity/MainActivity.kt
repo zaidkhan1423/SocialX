@@ -86,5 +86,4 @@ class MainActivity : AppCompatActivity(), LoginFragment.MainActivityCallback {
         binding.btnLogin.setTextColor(resources.getColor(R.color.gray_500))
         binding.btnSignup.background = resources.getDrawable(R.drawable.bg_nav_bar_item)
     }
-
 }

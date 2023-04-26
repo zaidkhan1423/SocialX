@@ -27,7 +27,7 @@ implementation 'com.google.dagger:dagger: 2.44'<br>
 kapt 'com.google.dagger:dagger-compiler: 2.44'<br><br>
 Country Code Picker: Used to provide a UI for selecting a country code. <br>
 implementation 'io.michaelrocks:libphonenumber-android:8.12.44'<br>
-implementation 'com.github.joielechong:countrycodepicker:2.4.2'<br>
+implementation 'com.github.joielechong:countrycodepicker:2.4.2'<br><br>
 Retrofit: Used to make API calls and parse the JSON responses.<br>
 implementation 'com.squareup.retrofit2:retrofit:2.9.0'<br>
 implementation 'com.squareup.retrofit2:converter-gson:2.9.0'<br><br>

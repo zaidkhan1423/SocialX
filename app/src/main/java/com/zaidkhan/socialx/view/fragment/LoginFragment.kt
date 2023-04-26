@@ -155,7 +155,6 @@ class LoginFragment : Fragment() {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
-                Toast.makeText(requireContext(), it.exception.toString(), Toast.LENGTH_SHORT).show()
                 val intent = Intent(activity?.application, NewsActivity::class.java)
                 startActivity(intent)
                 activity?.finish()
